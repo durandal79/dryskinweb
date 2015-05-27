@@ -259,13 +259,15 @@
             socket.emit("latlong", latlong);
 
 
-            socket.on("number", function(RHin) {
+            socket.on("number", function(type) {
 
-                console.log(RHin);
+                console.log(type);
 
-                document.getElementById("message").innerHTML = RHin;
+                document.getElementById("message").innerHTML = type;
 
             });
+
+
 
         });
 
@@ -295,13 +297,22 @@
 
 
                 <script type="text/javascript">
+                    var socket = io.connect();
+                    socket.on("number", function(type) {
+                        
+
+
                     var hydr =["#6BA2FA","#abdda4","#ffffbf","#fdae61","#d7191c"]; //defines background color associated with a given level of skin hydration potential
                     var cat = ["Very High", "High",'Moderate',"Low",'Very Low'];
                     var curr_date = moment().format("dddd MMM D");
                     document.getElementById("date").innerHTML = curr_date;
-                    document.getElementById("m1").style.backgroundColor = hydr[0];
-                    document.getElementById("category").innerHTML = cat[0];
+                    document.getElementById("m1").style.backgroundColor = hydr[type];
+                    document.getElementById("category").innerHTML = cat[type];
+                    });
+
                 </script>
+
+
             </div>
             <div class="col-lg-3 col-sm-4 main">
                 <h3>SIGN UP FOR SKIN HYDRATION ALERTS</h3>
