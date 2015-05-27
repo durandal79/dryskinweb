@@ -7,7 +7,9 @@ var app = express();
 var oneDay = 0;
 
 // Use compress middleware to gzip content
-//app.use(express.compress());
+
+var compress = require('compression');
+app.use(compress());
 
 // Serve up content from public directory
 app.use(express.static(__dirname + '/public', { maxAge: oneDay }));
@@ -70,14 +72,33 @@ io.on("connection", function(socket) {
                 var Wo = 216.7 * (RHo / 100) * (6.112 * Math.exp((17.62 * To) / (243.12 + To))) / (273.15 + To); //Calculates absolute humidity of outdoor air, gm/m^3
                 var Win = (S / V + AER * Wo + Beta * Wsat) / (AER + Alpha); // calculates water vapor concentration in indoor air, gm/m^3
                 var RHin = (Win / Wsat) * 100; // relative humidity of indoor air, %
-                console.log(To);
-                console.log(RHo);
-                console.log(V);
-                console.log(Wsat);
-                console.log(Wo);
-                console.log(Win);
+
+                var type = 0;
+                if(RHin <= 30)
+                {
+                    type =4;
+                }
+                else if(RHin <= 40)
+                {
+                    type = 3;
+                }
+                else if(RHin <= 50)
+                {
+                    type = 2;
+                }
+                else if(RHin <=60)
+                {
+                    type = 1;
+                }
+                else if(RHin > 60)
+                {
+                    type = 0;
+                };
+
+
+
                 console.log(RHin);
-                io.emit("number", RHin);
+                io.emit("number", type);
 
             }
         });
