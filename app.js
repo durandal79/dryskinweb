@@ -39,7 +39,7 @@ http.listen(3000, function(){
 
 });
 
-console.log('weather test');
+
 
 
 io.on("connection", function(socket) {
@@ -74,36 +74,44 @@ io.on("connection", function(socket) {
                 var RHin = (Win / Wsat) * 100; // relative humidity of indoor air, %
 
                 var type = 0;
-                if(RHin <= 30)
-                {
-                    type =4;
+                if (RHin <= 30) {
+                    type = 4;
                 }
-                else if(RHin <= 40)
-                {
+                else if (RHin <= 40) {
                     type = 3;
                 }
-                else if(RHin <= 50)
-                {
+                else if (RHin <= 50) {
                     type = 2;
                 }
-                else if(RHin <=60)
-                {
+                else if (RHin <= 60) {
                     type = 1;
-                }
-                else if(RHin > 60)
-                {
-                    type = 0;
                 };
 
 
 
                 console.log(RHin);
                 io.emit("number", type);
-
             }
         });
+
+                // Get UV data from Weather Underground
+
+                request('http://api.wunderground.com/api/9d0056d1d372fb05/conditions/q/autoip.json', function (error, response, body) {
+                    if (!error && response.statusCode == 200) {
+
+                        var underground = JSON.parse(body); // parse weather data
+                        var UV = underground.current_observation.UV; // UV index
+                        console.log(UV);
+                        var tempF = underground.current_observation.temp_f;
+                        console.log(tempF);
+                    }
+                });
+
+
     });
 });
+
+
 
 
 
