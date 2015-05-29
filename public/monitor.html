@@ -74,63 +74,7 @@
             background: #d7191c;
         }
     </style>
-    <style type="text/css">
-        * {
-            padding: 0;
-            margin: 0;
-        }
-        body {
-            font-family:  Arial, Helvetica, sans-serif;
-            color:#121319;
-        }
-        h1 {
-            font-weight: lighter;
 
-        }
-        p {
-            font-size: 13px;
-            line-height: 19px;
-            padding: 8px 0 12px 0;
-        }
-        a {
-            color:#121319;
-        }
-        a:hover {
-            text-decoration: none;
-        }
-        #container {
-            width: 640px;
-            padding: 40px;
-            margin: auto;
-        }
-        #details-box {
-            margin-top: 20px;
-            width: 640px;
-            padding: 14px;
-            background-color: #E1E1E1;
-        }
-        .textbox {
-            width: 300px;
-            padding:7px 6px 7px 6px;
-            border:1px solid #CCC;
-        }
-        .submit {
-            padding:6px 6px 6px 6px;
-        }
-        .variable {
-            color:#c81313;
-            font-style: italic;
-        }
-        #url {
-            font-size: 11px;
-        }
-        #map-canvas {
-            width: 640px;
-            height: 300px;
-            margin-top: 20px;
-            padding: 14px;
-        }
-    </style>
 
 </head>
 <body class="container">
@@ -167,18 +111,16 @@
 
 
 
-    <h1 align="center" id="temp"></h1>
+
 
 
     <script type="text/javascript">
         var socket = io.connect();
         socket.on("geoout", function(geodat) {
 
-
-            document.getElementById("temp").innerHTML = geodat.city;
-
-
-
+            document.getElementById("city").innerHTML = geodat.city;
+            var curr_date = moment().format("dddd MMM D");
+            document.getElementById("day").innerHTML = curr_date;
         });
 
     </script>
@@ -189,30 +131,55 @@
 
 
         <div class="row">
-            <div class="col-lg-3 col-sm-4 main" id="m1">
 
-                <div class="scale">
-                    <img src="images/scale.png">
+            <div class="col-sm-6 col-md-6">
+                <div class="thumbnail">
+
+                    <div class="caption">
+                        <h2>Skin Hydration Potential</h2>
+                        <div id = "city" >
+                            </div>
+                            <div id = "day">
+                                </div>
+                    </div>
+
+
+                    <img id="catimage"  class="img-thumbnail">
+            </div>
                 </div>
 
-                <h4 align="center">Skin Hydration Potential</h4>
 
-                <h1 align="center" id="category"></h1>
-                <h4 align="center" id="date"></h4>
+            <div class="col-sm-6 col-md-6">
+                <div class="thumbnail">
+                    <div class="item1">
+
+                        <h4>Parks and Recreation Areas</h4></a>
+
+                    </div>
+                </div>
+            </div>
 
 
                 <script type="text/javascript">
                     var socket = io.connect();
                     socket.on("number", function(type) {
-                        
 
+                        if (type=0) {
+                            document.getElementById("catimage").src = "/images/verylow.png";
+                        }
+                        else if (type=1) {
+                            document.getElementById("catimage").src = "/images/low.png";
+                        }
+                        else if (type=2) {
+                            document.getElementById("catimage").src = "/images/moderate.png";
+                        }
+                        else if (type=3) {
+                            document.getElementById("catimage").src = "/images/high.png";
+                        }
+                        else if (type=4) {
+                            document.getElementById("catimage").src = "/images/veryhigh.png";
+                        }
 
-                    var hydr =["#6BA2FA","#abdda4","#ffffbf","#fdae61","#d7191c"]; //defines background color associated with a given level of skin hydration potential
-                    var cat = ["Very High", "High",'Moderate',"Low",'Very Low'];
-                    var curr_date = moment().format("dddd MMM D");
-                    document.getElementById("date").innerHTML = curr_date;
-                    document.getElementById("m1").style.backgroundColor = hydr[type];
-                    document.getElementById("category").innerHTML = cat[type];
                     });
 
                 </script>
