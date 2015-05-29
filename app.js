@@ -84,7 +84,7 @@ app.use('/',function (req, res, next) {
                         }
                         else if (RHin <= 60) {
                             type = 1;
-                        };
+                        }
 
                         console.log(RHin);
                         io.emit("number", type);
