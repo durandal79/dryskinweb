@@ -165,119 +165,23 @@
 
 <main>
 
-    <script>
-
-        window.onload = function() {
-            // x functionality when window loads
 
 
-            function getLocation() {
-                if (navigator.geolocation) {
-                    navigator.geolocation.getCurrentPosition(showPosition, showError);
-                } else {
-                    x.innerHTML = "Geolocation is not supported by this browser.";
-                }
-            };
+    <h1 align="center" id="temp"></h1>
 
-            function showPosition(position) {
-                var latitude  = position.coords.latitude;
-                var longitude = position.coords.longitude;
-            };
-
-            function showError(error) {
-                switch (error.code) {
-                    case error.PERMISSION_DENIED:
-                        x.innerHTML = "User denied the request for Geolocation."
-                        break;
-                    case error.POSITION_UNAVAILABLE:
-                        x.innerHTML = "Location information is unavailable."
-                        break;
-                    case error.TIMEOUT:
-                        x.innerHTML = "The request to get user location timed out."
-                        break;
-                    case error.UNKNOWN_ERROR:
-                        x.innerHTML = "An unknown error occurred."
-                        break;
-                }
-            };
-
-            var socket = io.connect();
-
-            var latlong = {lat: latitude, long: longitude};
-
-            socket.emit("latlong", latlong);
-
-
-            socket.on("number", function (RHin) {
-
-                console.log(RHin);
-
-                document.getElementById("message").innerHTML = RHin;
-
-            });
-        };
-    </script>
-
-    <div id="container">
-
-        <p>Enter a location in the form below and submit to get lat and long</p>
-        <form action="javascript:void(0);" name="form1" id="form1">
-            <input type="text" name="location" class="textbox" id="location" value="" />
-            <input type="submit" value="Submit" class="submit" />
-        </form>
-        <div id="details-box">
-            <p>
-
-                <span>Latitude</span> <span class="variable">(geometry.location.lat())</span>: <span id="lat"></span><br/>
-                <span>Longitude</span> <span class="variable">(geometry.location.lng())</span>: <span id="long"></span><br/>
-            <div id="message"></div>
-            </p>
-        </div>
-    </div>
 
     <script type="text/javascript">
-        //Autocomplete variables
-        var input = document.getElementById('location');
-        var searchform = document.getElementById('form1');
-        var place;
-        var autocomplete = new google.maps.places.Autocomplete(input);
-
-        google.maps.event.addListener(autocomplete, 'place_changed', function () {
-            place = autocomplete.getPlace();
-            //console.log(place);
-        });
-
-        searchform.addEventListener("submit", function() {
-            var newlatlong = new google.maps.LatLng(place.geometry.location.lat(),place.geometry.location.lng());
-            document.getElementById('lat').innerHTML = place.geometry.location.lat();
-            document.getElementById('long').innerHTML = place.geometry.location.lng();
-
-            var socket = io.connect();
-
-            var latlong = {lat: place.geometry.location.lat(), long: place.geometry.location.lng()};
-
-            socket.emit("latlong", latlong);
+        var socket = io.connect();
+        socket.on("geoout", function(geodat) {
 
 
-            socket.on("number", function(type) {
-
-                console.log(type);
-
-                document.getElementById("message").innerHTML = type;
-
-            });
+            document.getElementById("temp").innerHTML = geodat.city;
 
 
 
-        });
-
-        input.addEventListener('click', function(){
-            input.value = "";
         });
 
     </script>
-
-
 
 
 
@@ -286,6 +190,7 @@
 
         <div class="row">
             <div class="col-lg-3 col-sm-4 main" id="m1">
+
                 <div class="scale">
                     <img src="images/scale.png">
                 </div>
