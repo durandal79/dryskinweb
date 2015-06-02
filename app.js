@@ -41,8 +41,17 @@ app.use('/',function (req, res, next) {
 
     io.on("connection", function (socket) {
 
+        //the weatherunderground api has an autoip option that gives us lat long and city name of the ip address.
+        // as an alternative I used freegeoip.net/json to get these inputs, and then invoked the openweathermap api, which
+        // has more generous api call limits. However, I think weatherunderground is a better product for obtaining
+        // data on current conditions.
+
         request('http://api.wunderground.com/api/9d0056d1d372fb05/conditions/q/autoip.json', function (error, response, body) {
             if (!error && response.statusCode == 200) {
+
+           //Note, in cases where we exceed our free level api calls, we could divert to another function that uses freegeoip.net/json to
+                //get lat long and then use those as inputs to openweathermap, which we use below
+
 
                 var conditions = JSON.parse(body); // parse weather data
 
@@ -53,7 +62,8 @@ app.use('/',function (req, res, next) {
                 var lat = conditions.current_observation.observation_location.latitude;
                 var long = conditions.current_observation.observation_location.longitude;
 
-
+                var UV = conditions.current_observation.UV; // UV index
+                console.log(UV);
 
                 var To = conditions.current_observation.temp_c; // outdoor air temperature, deg C
                 var RHout = conditions.current_observation.relative_humidity; // relative humidity of outdoor air, %
@@ -71,7 +81,7 @@ app.use('/',function (req, res, next) {
                 var V = A * Hc; // house volume, m^3
                 var AER = 0.3; // air exchange rate, exchanges/hr
                 var Alpha = 0.65; // rate of water vapor uptake into building materials, fraction/hr
-                var Beta = 0.17; // rate of water vapor release from building materials, fraction/hr
+                var Beta = 0.2; // rate of water vapor release from building materials, fraction/hr
                 var Tin = 26; // indoor temperature, deg C
                 var Wsat = (100000 * (6.112 * Math.exp(17.62 * Tin / (243.12 + Tin))) / ((273.15 + Tin) * 461.5)); // saturated water vapor concentration at indoor temperature, gm/m^3
 
@@ -106,24 +116,29 @@ app.use('/',function (req, res, next) {
 
                 io.emit("number", type);
 
-                request('http://api.openweathermap.org/data/2.5/weather?lat=' + lat + '&lon=' + long + '&units=metric&APPID=e450050cc136b1b2d3598501a1489045', function (error, response, body) {
+                request('http://api.openweathermap.org/data/2.5/forecast?lat=' + lat + '&lon=' + long + '&units=metric&APPID=e450050cc136b1b2d3598501a1489045', function (error, response, body) {
                     if (!error && response.statusCode == 200) {
 
                         var weather = JSON.parse(body); // parse weather data
+                        var tempout = weather.list[40].main.temp;
+                        var H = weather.list[40].main.humidity;
+                        var date = weather.list[40].dt_txt;
+                        var icount = weather.cnt;
+                        console.log(tempout);
+                        console.log(H);
+                        console.log(date);
+                        console.log(icount);
 
+                        for(var i = 0; i < icount; i++) {
+                            var obj = weather.list[i].main.temp;
 
-
+                            console.log(obj);
+                        }
                     }
 
-
-
                 });
-
             }
-
         });
-
-
             });
             next();
 
