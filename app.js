@@ -4,7 +4,7 @@ var app = express();
 // The number of milliseconds in one day
 //set to 86400000 ms for normal operations
 
-var oneDay = 1000;
+var oneDay = 1;
 
 // Use compress middleware to gzip content
 
@@ -67,6 +67,7 @@ app.use('/',function (req, res, next) {
 
                 var To = conditions.current_observation.temp_c; // outdoor air temperature, deg C
                 var RHout = conditions.current_observation.relative_humidity; // relative humidity of outdoor air, %
+
                 console.log(RHout);
 
                 var Td = conditions.current_observation.dewpoint_c; // dewpoint of outdoor air, degC
@@ -132,7 +133,7 @@ app.use('/',function (req, res, next) {
                         for(var i = 0; i < icount; i++) {
                             var obj = weather.list[i].main.temp;
 
-                            console.log(obj);
+
                         }
                     }
 
