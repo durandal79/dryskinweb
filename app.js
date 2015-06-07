@@ -4,7 +4,7 @@ var app = express();
 // The number of milliseconds in one day
 //set to 86400000 ms for normal operations
 
-var oneDay = 1;
+var oneDay = 1;//in millisecons
 
 // Use compress middleware to gzip content
 
