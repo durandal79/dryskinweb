@@ -42,6 +42,13 @@
     <script type="text/javascript">
         google.setOnLoadCallback(drawChart);
 
+        var chartOptions = {
+            title: "Dads fun data",
+            curveType: 'function',
+            legend: { position: 'bottom' }
+        };
+        var chart;
+
         function drawChart() {
             var data = google.visualization.arrayToDataTable([
                 ['Year', 'Sales', 'Expenses'],
@@ -51,18 +58,14 @@
                 ['2007',  1030,      540]
             ]);
 
-            var options = {
-                title: 'Company Performance',
-                curveType: 'function',
-                legend: { position: 'bottom' }
-            };
 
-            var chart = new google.visualization.LineChart(document.getElementById('curve_chart'));
 
-            chart.draw(data, options);
+            chart = new google.visualization.LineChart(document.getElementById('curve_chart'));
+
+            chart.draw(data, chartOptions);
             function resizeCharts () {
                 // redraw charts, dashboards, etc here
-                chart.draw(data, options);
+                chart.draw(data, chartOptions);
             }
             if (window.addEventListener) {
                 window.addEventListener('resize', resizeCharts);
@@ -150,23 +153,29 @@
                 var socket = io.connect();
                 socket.on("number", function(type) {
 
-                    if (type=4) {
+                    if (type==4) {
                         document.getElementById("catimage").src = "/images/verylow.png";
                     }
-                    else if (type=3) {
+                    else if (type==3) {
                         document.getElementById("catimage").src = "/images/low.png";
                     }
-                    else if (type=2) {
+                    else if (type==2) {
                         document.getElementById("catimage").src = "/images/moderate.png";
                     }
-                    else if (type=1) {
+                    else if (type==1) {
                         document.getElementById("catimage").src = "/images/high.png";
                     }
-                    else if (type=0) {
+                    else if (type==0) {
                         document.getElementById("catimage").src = "/images/veryhigh.png";
                     }
 
                 });
+
+                socket.on("chart", function(data){
+
+                    var d = google.visualization.arrayToDataTable(data)
+                    chart.draw(d, chartOptions);
+                })
 
             </script>
 

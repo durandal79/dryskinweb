@@ -1,6 +1,8 @@
 var express = require('express');
 var app = express();
 
+var when = require('when');
+
 // The number of milliseconds in one day
 //set to 86400000 ms for normal operations
 
@@ -112,11 +114,14 @@ app.use('/',function (req, res, next) {
                 else if (RHin <= 60) {
                     type = 1;
                 }
-
+type = 3;
                 console.log(type);
 
                 io.emit("number", type);
 
+
+
+                var obj = {};
                 request('http://api.openweathermap.org/data/2.5/forecast?lat=' + lat + '&lon=' + long + '&units=metric&APPID=e450050cc136b1b2d3598501a1489045', function (error, response, body) {
                     if (!error && response.statusCode == 200) {
 
@@ -125,19 +130,26 @@ app.use('/',function (req, res, next) {
                         var H = weather.list[40].main.humidity;
                         var date = weather.list[40].dt_txt;
                         var icount = weather.cnt;
-                        console.log(tempout);
-                        console.log(H);
-                        console.log(date);
-                        console.log(icount);
+                        console.log("tempout: "+tempout);
+                        console.log("H: "+H);
+                        console.log("date: "+date);
+                        console.log("icount: "+icount);
 
-                        for(var i = 0; i < icount; i++) {
-                            var obj = weather.list[i].main.temp;
+                        console.log("schema:  "+JSON.stringify(weather.list[0]))
+
+                        for(var i = 0; i < weather.list.length; i++)
+                        {
+                            obj.temp[obj.temp.length] = weather.list[i].main.temp;
 
 
                         }
                     }
 
                 });
+            }
+            else
+            {
+                console.log("error: "+error)
             }
         });
             });
